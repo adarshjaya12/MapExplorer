@@ -11,12 +11,11 @@ class NearBySearch:
             returnList.append(resObj)
         return returnList
     
-    def serialize(self):
-        return{
-            'next_page':self.NextPage,
-            'status': self.status,
-            'result': ([e.serialize() for e in self.Result])
-        }
+
+class NearBySearchModel:
+    def __init__(self,key,result):
+        self.Type = key
+        self.TypeResult = result
 
 
 class Results:
@@ -24,23 +23,12 @@ class Results:
         self.Geomenty = Geomenty(**geometry)
         self.PlaceId = place_id
         self.Vicinity = vicinity
+        self.Name = name
         self.rating = rating
         self.OpeningHours = opening_hours
-    def serialize(self):
-        return{
-            'geomenty': self.Geomenty.serialize(),
-            'place_id' :self.PlaceId,
-            'vicinity' :self.Vicinity,
-            'rating' :self.rating,
-            'openingHours': self.OpeningHours
-        }
+
 
 class Geomenty:
     def __init__(self,location,viewport):
         self.Latitude = location['lat']
         self.Longitude = location['lng']
-    def serialize(self):
-        return {
-            'latitude' : self.Latitude,
-            'longitude' : self.Longitude
-        }

@@ -3,13 +3,9 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import * as fetch from 'isomorphic-fetch';
 import PlaceFormContainer from './place-form-container';
+import {PlaceObject,IAutoComplete,TypeResultObject,INearBySearchResult} from '../classes/class'
+import PlaceListContainer from './place-list-container';
 
-interface IAutoComplete {
-    place_id: string;
-    description: string;
-    latitude:string;
-    longitude:string;
-}
 
 interface PlaceContainerState{
     autoCompleteFillList: Array<IAutoComplete>;
@@ -17,21 +13,25 @@ interface PlaceContainerState{
     longitude:string;
     displayDropDown: boolean;
     cityDescription:string;
+    nearBySearchList: Array<INearBySearchResult>;
+    displaySearchList:boolean;
 }
 
-class PlaceContainer extends React.Component<any, any>{
+class PlaceContainer extends React.Component<any, PlaceContainerState>{
     constructor(props: any) {
         super(props)
         this.state={
             autoCompleteFillList: new Array<IAutoComplete>(),
+            nearBySearchList: new Array<INearBySearchResult>(),
             latitude: '',
             longitude: '',
             displayDropDown:false,
-            cityDescription: ''
+            cityDescription: '',
+            displaySearchList:false,
         }
     }
 
-    fetchFromAPI(apiUrl: string): any {
+    fetchFromAPIForInputChange(apiUrl: string): any {
         fetch(apiUrl).then(response => {
             if (response.status >= 200 && response.status < 300) {
                 console.log("Success");
@@ -47,14 +47,25 @@ class PlaceContainer extends React.Component<any, any>{
     }
     handleInputChange(inputText: string): void {
         var autoCompleteUrl = "/autofillcities?input=" + inputText;
-        this.fetchFromAPI(autoCompleteUrl);
+        this.fetchFromAPIForInputChange(autoCompleteUrl);
     }
     
     buttonSubmit(): boolean {
         var latitude= this.state.latitude;
         var longitude = this.state.longitude;
         var url = "/Submit?&latitude="+latitude+"&longitude="+longitude;
-        this.fetchFromAPI(url);
+        fetch(url).then(response => {
+            if (response.status >= 200 && response.status < 300) {
+                console.log("Success");
+            }
+            return response.json();
+        }).then(body => {
+            console.log(body);
+            this.setState({
+                nearBySearchList : body,
+                displaySearchList:true
+            });
+        })
         return false;
     }
 
@@ -68,7 +79,7 @@ class PlaceContainer extends React.Component<any, any>{
         }).then(body => {
             var description = body.city+', '+body.state+', '+body.country;
             this.setState({
-                autoFillList: new Array<IAutoComplete>(),
+                autoCompleteFillList: new Array<IAutoComplete>(),
                 cityDescription:description
             });
         });
@@ -109,13 +120,22 @@ class PlaceContainer extends React.Component<any, any>{
     }
     
     render() {
-        const display = this.state.displayList;
         return (
             <div>
-                <PlaceFormContainer geoLocation={this.geolocation.bind(this)} 
-                handleInput ={this.handleInputChange.bind(this)}  
-                googleAutoCompleteSelect={this.googleAutoCompleteSelect.bind(this)}
-                autoCompleteList={this.state.autoCompleteFillList} displayDropDown={this.state.displayDropDown} cityDescription={this.state.cityDescription}  />
+                <div>
+                    <PlaceFormContainer geoLocation={this.geolocation.bind(this)} 
+                    handleInput ={this.handleInputChange.bind(this)}  
+                    googleAutoCompleteSelect={this.googleAutoCompleteSelect.bind(this)}
+                    autoCompleteList={this.state.autoCompleteFillList} displayDropDown={this.state.displayDropDown} cityDescription={this.state.cityDescription}  />
+                </div>
+                <div>
+                    {
+                        (this.state.displaySearchList) ?
+                        <PlaceListContainer nearBySearchList={this.state.nearBySearchList} />
+                        :
+                        <div></div>
+                    }
+                </div>
             </div>
         );
     }
