@@ -24,25 +24,26 @@ class PlaceListContainer extends React.Component<PlaceListContainerProps, PlaceL
             typeSelected: 'default'
         }
         var typeStrings = this.props.nearBySearchList.map(x => x.Type);
-        if(this.state.typeSelected == 'default')
-        {
-            var filteredResult = this.props.nearBySearchList[0];
-            this.setState({})
-        }
-        else{
-            var filteredResult = this.props.nearBySearchList.filter(x => x.Type == this.state.typeSelected)[0];
-            var result = new Array<PlaceObject>();
-            var placeObjects = filteredResult.TypeResult.map(i => i.Result);
-            placeObjects.forEach(element => {
-                element.forEach(item =>{
-                    result.push(item);
-                })
-            });
-            this.setState({displayList : result})
-        }
+        var result = new Array<PlaceObject>();
+        var filteredResult: INearBySearchResult = undefined;
+        
         this.setState({
             nearByTypeList: typeStrings,
-            
+        })
+        
+        if(this.state.typeSelected == 'default')
+            filteredResult = this.props.nearBySearchList[0];
+        else
+            filteredResult = this.props.nearBySearchList.filter(x => x.Type == this.state.typeSelected)[0];
+ 
+        var placeObjects = filteredResult.TypeResult.map(i => i.Result);
+        placeObjects.forEach(element => {
+            element.forEach(item =>{
+                result.push(item);
+            })
+        });
+        this.setState({
+            displayList : result
         })
     }
 

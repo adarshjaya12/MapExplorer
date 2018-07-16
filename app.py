@@ -1,6 +1,6 @@
 from flask import Flask,render_template,request,jsonify,json
 import jsonpickle
-from services.google.googleservice import getNearByItems,getCityModelFromGeo,getAutoCompelte
+from services.google.googleservice import getNearByItems,getCityModelFromGeo,getAutoCompelte,getLatLongBasedOnPlaceId
 app = Flask(__name__)
 
 
@@ -21,6 +21,12 @@ def getGeoLocation():
     longitude= request.args.get("longitude")
     result = getCityModelFromGeo(latitude,longitude)
     return jsonify(result.serialize())
+
+@app.route('/GetLatAndLong')
+def GetLatAndLong():
+    place_id = request.args.get("place_id")
+    result = getLatLongBasedOnPlaceId(place_id)
+    return jsonpickle.encode(result)
 
 @app.route('/Submit')
 def submit():

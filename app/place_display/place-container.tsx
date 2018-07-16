@@ -126,7 +126,10 @@ class PlaceContainer extends React.Component<any, PlaceContainerState>{
                     <PlaceFormContainer geoLocation={this.geolocation.bind(this)} 
                     handleInput ={this.handleInputChange.bind(this)}  
                     googleAutoCompleteSelect={this.googleAutoCompleteSelect.bind(this)}
-                    autoCompleteList={this.state.autoCompleteFillList} displayDropDown={this.state.displayDropDown} cityDescription={this.state.cityDescription}  />
+                    autoCompleteList={this.state.autoCompleteFillList}
+                    displayDropDown={this.state.displayDropDown} 
+                    cityDescription={this.state.cityDescription}
+                    buttonSubmit={this.buttonSubmit.bind(this)}  />
                 </div>
                 <div>
                     {

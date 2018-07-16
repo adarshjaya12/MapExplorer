@@ -1,5 +1,5 @@
 from services.google.nearbysearchservice import getNearBySearchByDefinedType
-from api.apiurl.apiurl import REVERSE_GEO_CODING,AUTO_COMPLETE
+from api.apiurl.apiurl import REVERSE_GEO_CODING,AUTO_COMPLETE,PLACE_DETAIL
 from dto.autocomplete import AutoComplete,Prediction,AutoCompleteJson
 from dto.geocoding import GeoCoding,Result,AddressComponent,CityModel,Location
 from api.apiclient import get_call
@@ -9,6 +9,15 @@ def getNearByItems(lat,lng):
     latLong = str(lat)+','+str(lng)
     result = getNearBySearchByDefinedType(latLong)
     return result
+
+
+def getLatLongBasedOnPlaceId(text):
+        autoUrl = PLACE_DETAIL.format(text)
+        result =  get_call(autoUrl)
+        geoCoding = GeoCoding(**result)
+        location = geoCoding.results[0]["geometry"]["location"]
+        return Location(**location)
+
 
 def getAutoCompelte(text):
 	autoUrl = AUTO_COMPLETE.format(text)

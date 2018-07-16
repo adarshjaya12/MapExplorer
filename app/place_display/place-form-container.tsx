@@ -14,6 +14,7 @@ interface PlaceFormProps{
     geoLocation:() => void;
     handleInput:(inputString: string) => void;
     googleAutoCompleteSelect:(placeId:string) =>string;
+    buttonSubmit:() => void;
     autoCompleteList: Array<IAutoComplete>;
     displayDropDown:boolean;
     cityDescription:string;
@@ -39,6 +40,9 @@ class PlaceFormContainer extends React.Component<PlaceFormProps, any>{
         this.props.handleInput(inputText);
     }
 
+    handleButtonClick():void{
+        this.props.buttonSubmit();
+    }
     selectedFromAutofill(placeId):void{
         console.log(placeId);
         var cityDescription = this.props.googleAutoCompleteSelect(placeId);
@@ -64,6 +68,7 @@ class PlaceFormContainer extends React.Component<PlaceFormProps, any>{
                         (<div></div>)
                     }
                 </div>
+                <button type="button" className="form-container-button" onClick={this.handleButtonClick.bind(this)}>Submit</button>
             </div>
         );
     }
