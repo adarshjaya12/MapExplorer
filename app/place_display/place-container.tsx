@@ -34,11 +34,9 @@ class PlaceContainer extends React.Component<any, PlaceContainerState>{
     fetchFromAPIForInputChange(apiUrl: string): any {
         fetch(apiUrl).then(response => {
             if (response.status >= 200 && response.status < 300) {
-                console.log("Success");
             }
             return response.json();
         }).then(body => {
-            console.log(body);
             this.setState({
                 autoCompleteFillList : body,
                 displayDropDown:true
@@ -56,11 +54,9 @@ class PlaceContainer extends React.Component<any, PlaceContainerState>{
         var url = "/Submit?&latitude="+latitude+"&longitude="+longitude;
         fetch(url).then(response => {
             if (response.status >= 200 && response.status < 300) {
-                console.log("Success");
             }
             return response.json();
         }).then(body => {
-            console.log(body);
             this.setState({
                 nearBySearchList : body,
                 displaySearchList:true
@@ -73,7 +69,6 @@ class PlaceContainer extends React.Component<any, PlaceContainerState>{
         fetch(apiUrl).then(response => {
             if (response.status >= 200 && response.status < 300)
             {
-                console.log("Success");
             }
             return response.json();
         }).then(body => {
@@ -88,33 +83,37 @@ class PlaceContainer extends React.Component<any, PlaceContainerState>{
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(this.success.bind(this));
         } else {
-            console.log("No geo location");
         }
     }
-
+    fetchLatLong(apiurl:string):void{
+        fetch(apiurl).then(response => {
+            if (response.status >= 200 && response.status < 300)
+            {
+            }
+            return response.json();
+        }).then(body => {
+            this.setState({
+                latitude:body.latitude,
+                longitude:body.longitude
+            });
+        });
+    }
     googleAutoCompleteSelect(placeId: string): string {
-        console.log(placeId);
         var autoPlace = this.state.autoCompleteFillList.filter(it => it.place_id == placeId);
+        var apiurl = '/GetLatAndLong?place_id='+placeId;
         if (autoPlace.length > 0) {
-
             this.setState({
                 autoCompleteFillList: new Array<IAutoComplete>(),
-                latitude: autoPlace[0].latitude,
-                longitude: autoPlace[0].longitude,
             });
+            this.fetchLatLong(apiurl);
             return autoPlace[0].description;
         }
         return "";
     }
 
     success(position :any): void {
-        var lat = position.coords.latitude;
-        var long = position.coords.longitude;
-        this.setState({
-            latitude: lat,
-            longitude:long
-        })
-        console.log('Your latitude is :' + lat + ' and longitude is ' + long);
+        var lat = this.state.latitude;
+        var long = this.state.longitude;
         var goeLocationUrl = "/GetGeoLocation?latitude=" + lat + "&longitude=" + long;
         this.fetchGeoLocation(goeLocationUrl);
     }

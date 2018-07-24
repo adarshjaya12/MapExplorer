@@ -14,7 +14,6 @@ interface PlaceListContainerState{
     displayList:Array<PlaceObject>;
     typeSelected: string;
 }
-
 class PlaceListContainer extends React.Component<PlaceListContainerProps, PlaceListContainerState>{
     constructor(props: any) {
         super(props)
@@ -23,30 +22,23 @@ class PlaceListContainer extends React.Component<PlaceListContainerProps, PlaceL
             displayList:new Array<PlaceObject>(),
             typeSelected: 'default'
         }
+        
+    }
+
+    componentDidMount(){
         var typeStrings = this.props.nearBySearchList.map(x => x.Type);
         var result = new Array<PlaceObject>();
         var filteredResult: INearBySearchResult = undefined;
-        
-        this.setState({
-            nearByTypeList: typeStrings,
-        })
-        
         if(this.state.typeSelected == 'default')
             filteredResult = this.props.nearBySearchList[0];
         else
             filteredResult = this.props.nearBySearchList.filter(x => x.Type == this.state.typeSelected)[0];
- 
-        var placeObjects = filteredResult.TypeResult.map(i => i.Result);
-        placeObjects.forEach(element => {
-            element.forEach(item =>{
-                result.push(item);
-            })
-        });
+        result= filteredResult.TypeResult.Result;
         this.setState({
+            nearByTypeList: typeStrings,
             displayList : result
-        })
+        });
     }
-
     dropdownChange(e: any): void {
         var typeSelectedValue = e.target.value;
         this.setState({
@@ -58,7 +50,7 @@ class PlaceListContainer extends React.Component<PlaceListContainerProps, PlaceL
         return (
             <div>
                 <div>
-                    <select  onChange={this.dropdownChange.bind(this)}>
+                    <select  onChange={this.dropdownChange.bind(this)} value={this.state.typeSelected}>
                         {this.state.nearByTypeList.map(item =>
                             <option key={item} value={item} >
                                 {item}
@@ -70,7 +62,7 @@ class PlaceListContainer extends React.Component<PlaceListContainerProps, PlaceL
                     <ul className="auto-complete-list" >
                         {this.state.displayList.map(item =>
                             <li >
-                                <p>item.name</p>
+                                <p>{item.Name}</p>
                             </li>
                         )}
                     </ul>

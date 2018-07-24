@@ -23,9 +23,6 @@ interface PlaceFormProps{
 class PlaceFormContainer extends React.Component<PlaceFormProps, any>{
     constructor(props: any) {
         super(props)
-        console.log(this.props.autoCompleteList);
-        console.log(this.props.displayDropDown);
-        console.log(this.props.cityDescription);
     }
     goeClick():void{
         var cityDescription = this.props.geoLocation();
@@ -40,11 +37,11 @@ class PlaceFormContainer extends React.Component<PlaceFormProps, any>{
         this.props.handleInput(inputText);
     }
 
-    handleButtonClick():void{
+    handleButtonClick():boolean{
         this.props.buttonSubmit();
+        return false;
     }
     selectedFromAutofill(placeId):void{
-        console.log(placeId);
         var cityDescription = this.props.googleAutoCompleteSelect(placeId);
         var input = this.refs.autoCompletePlaces as any;
         if(input != undefined){

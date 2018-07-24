@@ -14,8 +14,7 @@ def getNearByItems(lat,lng):
 def getLatLongBasedOnPlaceId(text):
         autoUrl = PLACE_DETAIL.format(text)
         result =  get_call(autoUrl)
-        geoCoding = GeoCoding(**result)
-        location = geoCoding.results[0]["geometry"]["location"]
+        location = result["result"]["geometry"]["location"]
         return Location(**location)
 
 

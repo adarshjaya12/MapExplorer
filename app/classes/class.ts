@@ -9,7 +9,7 @@ export interface PlaceObject{
     Geomenty: any;
     OpeningHours: any;
     PlaceId: string;
-    name:string;
+    Name:string;
     Vicinity:string;
     rating:string;
 }
@@ -20,5 +20,5 @@ export interface TypeResultObject{
 }
 export interface INearBySearchResult{
     Type:string;
-    TypeResult: Array<TypeResultObject>;
+    TypeResult: TypeResultObject;
 }
